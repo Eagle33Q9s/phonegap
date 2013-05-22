@@ -40,35 +40,26 @@ function getRandom (min, max) {
     return Math.random() * (max - min) + min;
 }
 
-function canvasOnClick(e){ 
-    for(var key in balls)
-    {
-        //check if click is in rect of ball
-        if(e.clientX >= (balls[key].x - radius) && e.clientX <= (balls[key].x + (radius*2)) &&
-            e.clientY >= balls[key].y && e.clientY <= (balls[key].y + (radius*2)))
-        {
-            console.log("Ball min",(balls[key].x - radius),":", balls[key].y, "ball max",
-            (balls[key].x + (radius * 2)),":",(balls[key].y + (radius * 2)),
-            "mouseClick", e.clientX, ":", e.clientY);
-            delete(balls[key]);
-            points++;
-        }
-    }
+function ballClick(e){
+    var index = e.target.parentNode.id.split("_");
+    $(e.target).remove();
+    delete(balls[index[1]]);
 }
 
 $(document).ready(function(){
     $("#info").text(screen.availHeight+"x"+screen.availWidth);
     for(var i = ball_cnt; i > 0; i--)
     {
-        balls.push(new ball(ball_cnt - i));
+        balls.push(new ball());
         $("#app").append(balls[balls.length - 1].ball);
         var img = document.createElement("img");
             img.src = "./images/ballon.png";
+        balls[balls.length - 1].ball.id = "ball_"+(balls.length - 1);
         balls[balls.length - 1].ball.style.position = "absolute";
         balls[balls.length - 1].ball.appendChild(img);
-        
         balls[balls.length - 1].ball.style.left = balls[balls.length - 1].x+"px";
         balls[balls.length - 1].ball.style.top = balls[balls.length - 1].y+"px";
+        balls[balls.length - 1].ball.onclick = ballClick;
     }
     setInterval(move,10);
 });
