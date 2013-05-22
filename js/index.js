@@ -78,7 +78,7 @@ function canvasOnClick(e)
 $(document).ready(function()
 {
     $("#info").text(screen.availHeight+"x"+screen.availWidth);
-    $("#myCanvas").click(canvasOnClick)
+    $("#myCanvas").click(canvasOnClick);
     $(window).resize(onResize);
     onResize();
     for(var i = ball_cnt; i > 0; i--)
