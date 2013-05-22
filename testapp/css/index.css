@@ -10,6 +10,9 @@ root {
     display: block;
 }
 
-#myCanvas{
+#app{
     background-color: #33ff33;
+    width:400px;
+    height:400px;
+    possition:absolute;
 }

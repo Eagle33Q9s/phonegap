@@ -1,65 +1,46 @@
-var screenWidth = 0;
-var screenHeigth = 0;
 var balls = [];
-var ball_cnt = 7;
-var radius = 0;
-var context = "";
+var ball_cnt = 3;
+var radius = 400 / 100;
 var points = 0;
-
+    
 function ball(index){
-    this.x = getRandom(radius, $("#myCanvas").width() - (2*radius));
-    this.y = getRandom(radius, $("#myCanvas").height() - (2*radius));
+    this.x = getRandom(radius, 400 - radius);
+    this.y = getRandom(radius, 400 - radius);
     this.color = "#FF0000";
     this.speedx = Math.random();
     this.speedy = Math.random();
     this.radius = radius;
     this.name = "ball"+index;
+    this.ball = document.createElement("div");
 }
 
-function onResize(){
-    if($(window).innerWidth() !== screenWidth || 
-       $(window).innerHeight() !== screenHeigth)
-    {
-        screenWidth = $(window).innerWidth();
-        screenHeigth = $(window).innerHeight();
-        radius = screenWidth / 1000 * 25;
-        document.getElementById("myCanvas").width = screenWidth / 100 * 95;
-        document.getElementById("myCanvas").height = screenHeigth / 10 * 9;
-    }
-}
-
-function draw(){
-    context = $("#myCanvas")[0].getContext('2d');
-    context.clearRect(0,0,screenWidth,screenHeigth / 10 * 9);
-    context.beginPath();
+function move(){
     for(var key in balls)
     {
         balls[key].x += balls[key].speedx;
         balls[key].y += balls[key].speedy;
         //if ball hits bottom or top side of screen
-        if(balls[key].y + radius >= $("#myCanvas").height() || balls[key].y - radius <= 0)
+        if(balls[key].y + radius >= 400 || balls[key].y - radius <= 0)
         {
             balls[key].speedy *= -1;
         }
         
         //if ball hits right or left side of screen
-        if(balls[key].x + radius >= $("#myCanvas").width() || balls[key].x - radius <= 0)
+        if(balls[key].x + radius >= 400 || balls[key].x - radius <= 0)
         {
             balls[key].speedx *= -1;
         }
-        context.fillStyle = balls[key].color;
-        context.arc(balls[key].x,balls[key].y,radius,0,Math.PI*2, true);
+        
+        balls[key].ball.style.left = balls[key].x+"px";
+        balls[key].ball.style.top = balls[key].y+"px";
     }
-    context.closePath();
-    context.fill();
 } 
 
 function getRandom (min, max) {
     return Math.random() * (max - min) + min;
 }
 
-function canvasOnClick(e)
-{
+function canvasOnClick(e){ 
     for(var key in balls)
     {
         //check if click is in rect of ball
@@ -75,16 +56,19 @@ function canvasOnClick(e)
     }
 }
 
-$(document).ready(function()
-{
+$(document).ready(function(){
     $("#info").text(screen.availHeight+"x"+screen.availWidth);
-    $("#myCanvas").click(canvasOnClick);
-    $(window).resize(onResize);
-    onResize();
     for(var i = ball_cnt; i > 0; i--)
     {
-        balls.push(new ball());
+        balls.push(new ball(ball_cnt - i));
+        $("#app").append(balls[balls.length - 1].ball);
+        var img = document.createElement("img");
+            img.src = "./images/ballon.png";
+        balls[balls.length - 1].ball.style.position = "absolute";
+        balls[balls.length - 1].ball.appendChild(img);
+        
+        balls[balls.length - 1].ball.style.left = balls[balls.length - 1].x+"px";
+        balls[balls.length - 1].ball.style.top = balls[balls.length - 1].y+"px";
     }
-    
-    setInterval(draw,10);
+    setInterval(move,10);
 });
